@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PublicLink - Civic Issue Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2E7D32;
+      --primary-light: #4CAF50;
+      --primary-dark: #1B5E20;
+      --secondary: #795548;
+      --accent: #FFC107;
+      --light: #F5F5F5;
+      --dark: #333333;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      overflow-x: hidden;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+    
+    .nav-link {
+      color: rgba(255, 255, 255, 0.85) !important;
+      font-weight: 500;
+      margin: 0 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-link:hover {
+      color: white !important;
+      transform: translateY(-2px);
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    /* Sections */
+    .section {
+      padding: 80px 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .section.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Home Section */
+    #home {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1517486808906-6ca8b3f8e1c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    
+    #home h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    #home p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+      background: linear-gradient(to right, var(--primary-light), var(--primary));
+    }
+    
+    .btn-outline-primary {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 10px 28px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+    }
+    
+    /* Cards */
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 15px 20px;
+    }
+    
+    .card-body {
+      padding: 25px;
+    }
+    
+    /* Forms */
+    .form-control {
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+    }
+    
+    /* Tables */
+    .table {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .table thead th {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      padding: 15px;
+    }
+    
+    .table tbody td {
+      padding: 15px;
+      vertical-align: middle;
+    }
+    
+    .table tbody tr {
+      transition: all 0.3s ease;
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(46, 125, 50, 0.05);
+      transform: translateX(5px);
+    }
+    
+    /* Dashboard */
+    .dashboard {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .dashboard.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Status badges */
+    .badge {
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+    
+    .bg-pending {
+      background-color: #FFF8E1;
+      color: #FFA000;
+    }
+    
+    .bg-solved {
+      background-color: #E8F5E9;
+      color: var(--primary);
+    }
+    
+    .bg-escalated {
+      background-color: #FFEBEE;
+      color: #D32F2F;
+    }
+    
+    /* About Section */
+    #about {
+      background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('https://images.unsplash.com/photo-1517486808906-6ca8b3f8e1c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 40px 0;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+    
+    /* Village theme elements */
+    .village-icon {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .nature-bg {
+      background-color: #E8F5E9;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%234CAF50' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+    
+    /* Auth Tabs */
+    .auth-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .auth-tab {
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .auth-tab.active {
+      color: var(--primary);
+    }
+    
+    .auth-tab::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .auth-tab.active::after {
+      width: 100%;
+    }
+    
+    .auth-form {
+      display: none;
+    }
+    
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      #home h1 {
+        font-size: 2.5rem;
+      }
+      
+      #home p {
+        font-size: 1.2rem;
+      }
+      
+      .section {
+        padding: 60px 0;
+      }
+      
+      .auth-tab {
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="fas fa-tree"></i> PublicLink</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#auth-section">Login/Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="#citizenDashboard">Citizen</a></li>
+        <li class="nav-item"><a class="nav-link" href="#repDashboard">Representative</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Home Section -->
+<section id="home" class="section active">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h1 class="fade-in">Welcome to PublicLink</h1>
+        <p class="fade-in">A Transparent & Accountable Civic Issue Reporting Platform for Village Communities</p>
+        <a href="#auth-section" class="btn btn-primary btn-lg fade-in">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Auth Section with Tabs -->
+<section id="auth-section" class="section nature-bg">
+  <div class="container">
+    <h2 class="text-center mb-5">Join PublicLink</h2>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="auth-tabs">
+              <button class="auth-tab" id="login-tab">Login</button>
+              <button class="auth-tab active" id="register-tab">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" id="loginEmail" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" id="loginPassword" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+              <p class="text-center mt-3">
+                Don't have an account? <a href="#" class="switch-tab" data-tab="register-tab">Register here</a>
+              </p>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form active">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" id="regName" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" id="regEmail" class="form-control" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Password</label>
+                  <input type="password" id="regPassword" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Confirm Password</label>
+                  <input type="password" id="regConfirmPassword" class="form-control" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Role</label>
+                <select id="regRole" class="form-control">
+                  <option value="citizen">Citizen</option>
+                  <option value="representative">Representative</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 mt-3">Register</button>
+              <p class="text-center mt-3">
+                Already have an account? <a href="#" class="switch-tab" data-tab="login-tab">Login here</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Citizen Dashboard -->
+<section id="citizenDashboard" class="dashboard">
+  <div class="container">
+    <h2 class="text-center mb-4">Citizen Dashboard</h2>
+    
+    <div class="card mb-5">
+      <div class="card-header text-center">
+        <i class="village-icon fas fa-flag"></i>
+        <h4 class="mb-0">Report New Issue</h4>
+      </div>
+      <div class="card-body">
+        <form id="issueForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Title</label>
+              <input type="text" id="issueTitle" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Pincode</label>
+              <input type="text" id="issuePincode" class="form-control" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea id="issueDesc" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Priority</label>
+            <select id="issuePriority" class="form-control">
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit Issue</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header text-center">
+        <i class="village-icon fas fa-list"></i>
+        <h4 class="mb-0">My Reported Issues</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="citizenIssues">
+              <tr>
+                <td colspan="5" class="text-center">No issues reported yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Representative Dashboard -->
+<section id="repDashboard" class="dashboard">
+  <div class="container">
+    <h2 class="text-center mb-4">Representative Dashboard</h2>
+    
+    <div class="card">
+      <div class="card-header text-center">
+        <i class="village-icon fas fa-tasks"></i>
+        <h4 class="mb-0">Assigned Issues</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Pincode</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="repIssues">
+              <tr>
+                <td colspan="6" class="text-center">No issues assigned yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="section">
+  <div class="container">
+    <h2 class="text-center mb-5">About PublicLink</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="village-icon fas fa-hands-helping"></i>
+            <p class="lead">PublicLink connects citizens with their local representatives for transparent civic issue reporting in villages and rural communities.</p>
+            <p>Our platform ensures accountability, timely resolution, and empowers communities to actively participate in local governance and development.</p>
+            <div class="row mt-5">
+              <div class="col-md-4 mb-3">
+                <i class="village-icon fas fa-check-circle"></i>
+                <h5>Transparency</h5>
+                <p>Track your issues from report to resolution</p>
+              </div>
+              <div class="col-md-4 mb-3">
+                <i class="village-icon fas fa-bolt"></i>
+                <h5>Efficiency</h5>
+                <p>Streamlined process for quick resolution</p>
+              </div>
+              <div class="col-md-4 mb-3">
+                <i class="village-icon fas fa-users"></i>
+                <h5>Community</h5>
+                <p>Empowering local communities</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer text-center">
+  <div class="container">
+    <p>PublicLink - Civic Issue Management Platform</p>
+    <p>Designed for village communities to report and resolve local issues</p>
+    <p class="mb-0">© 2023 PublicLink. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// LocalStorage Mock Data
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let issues = JSON.parse(localStorage.getItem("issues")) || [];
+let currentUser = null;
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  // Set up section observers for animations
+  setupSectionObservers();
+  
+  // Set up smooth scrolling for navigation links
+  setupSmoothScrolling();
+  
+  // Set up form submissions
+  setupFormHandlers();
+  
+  // Set up auth tab switching
+  setupAuthTabs();
+});
+
+// Set up Intersection Observer for section animations
+function setupSectionObservers() {
+  const sections = document.querySelectorAll('.section');
+  
+  const options = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  };
+  
+  const observer = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, options);
+  
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+}
+
+// Set up smooth scrolling for navigation links
+function setupSmoothScrolling() {
+  document.querySelectorAll('a.nav-link, a.btn-primary[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        window.scrollTo({
+          top: targetElement.offsetTop - 80,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+}
+
+// Set up authentication tab switching
+function setupAuthTabs() {
+  const loginTab = document.getElementById('login-tab');
+  const registerTab = document.getElementById('register-tab');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const switchLinks = document.querySelectorAll('.switch-tab');
+  
+  // Switch to login tab
+  loginTab.addEventListener('click', function() {
+    loginTab.classList.add('active');
+    registerTab.classList.remove('active');
+    loginForm.classList.add('active');
+    registerForm.classList.remove('active');
+  });
+  
+  // Switch to register tab
+  registerTab.addEventListener('click', function() {
+    registerTab.classList.add('active');
+    loginTab.classList.remove('active');
+    registerForm.classList.add('active');
+    loginForm.classList.remove('active');
+  });
+  
+  // Switch via links
+  switchLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const tabId = this.getAttribute('data-tab');
+      document.getElementById(tabId).click();
+    });
+  });
+}
+
+// Set up form submission handlers
+function setupFormHandlers() {
+  // Register form
+  document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    
+    // Validate passwords match
+    const password = document.getElementById("regPassword").value;
+    const confirmPassword = document.getElementById("regConfirmPassword").value;
+    
+    if (password !== confirmPassword) {
+      showNotification('Passwords do not match!', 'error');
+      return;
+    }
+    
+    const user = {
+      name: document.getElementById("regName").value,
+      email: document.getElementById("regEmail").value,
+      password: password,
+      role: document.getElementById("regRole").value
+    };
+    
+    // Check if user already exists
+    if (users.some(u => u.email === user.email)) {
+      showNotification('User with this email already exists!', 'error');
+      return;
+    }
+    
+    users.push(user);
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    // Show success message with animation
+    showNotification('Registration successful! You can now login.', 'success');
+    
+    // Switch to login form
+    document.getElementById('login-tab').click();
+    
+    // Clear form
+    this.reset();
+  });
+
+  // Login form
+  document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const pass = document.getElementById("loginPassword").value;
+    const user = users.find(u => u.email === email && u.password === pass);
+    
+    if(user){
+      currentUser = user;
+      showNotification(`Welcome back, ${user.name}!`, 'success');
+      
+      if(user.role === "citizen"){
+        document.getElementById("citizenDashboard").style.display = "block";
+        document.getElementById("repDashboard").style.display = "none";
+        setTimeout(() => {
+          document.getElementById("citizenDashboard").classList.add("active");
+          window.scrollTo({
+            top: document.getElementById("citizenDashboard").offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }, 300);
+        loadCitizenIssues();
+      } else {
+        document.getElementById("repDashboard").style.display = "block";
+        document.getElementById("citizenDashboard").style.display = "none";
+        setTimeout(() => {
+          document.getElementById("repDashboard").classList.add("active");
+          window.scrollTo({
+            top: document.getElementById("repDashboard").offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }, 300);
+        loadRepIssues();
+      }
+    } else {
+      showNotification('Invalid credentials! Please try again.', 'error');
+    }
+  });
+
+  // Issue form
+  document.getElementById("issueForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const issue = {
+      id: issues.length + 1,
+      user: currentUser.email,
+      title: document.getElementById("issueTitle").value,
+      desc: document.getElementById("issueDesc").value,
+      pincode: document.getElementById("issuePincode").value,
+      priority: document.getElementById("issuePriority").value,
+      status: "Pending",
+      date: new Date().toLocaleDateString()
+    };
+    issues.push(issue);
+    localStorage.setItem("issues", JSON.stringify(issues));
+    
+    showNotification('Issue reported successfully!', 'success');
+    
+    // Clear form
+    this.reset();
+    loadCitizenIssues();
+  });
+}
+
+// Citizen Issue Table
+function loadCitizenIssues(){
+  const tbody = document.getElementById("citizenIssues");
+  const userIssues = issues.filter(i => i.user === currentUser.email);
+  
+  if (userIssues.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No issues reported yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = "";
+  userIssues.forEach(i => {
+    const statusClass = i.status === 'Solved' ? 'bg-solved' : i.status === 'Escalated' ? 'bg-escalated' : 'bg-pending';
+    
+    tbody.innerHTML += `
+      <tr>
+        <td>${i.id}</td>
+        <td>${i.title}</td>
+        <td><span class="badge ${statusClass}">${i.status}</span></td>
+        <td>${i.priority}</td>
+        <td>${i.date}</td>
+      </tr>
+    `;
+  });
+}
+
+// Rep Issue Table
+function loadRepIssues(){
+  const tbody = document.getElementById("repIssues");
+  
+  if (issues.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No issues assigned yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = "";
+  issues.forEach(i => {
+    const statusClass = i.status === 'Solved' ? 'bg-solved' : i.status === 'Escalated' ? 'bg-escalated' : 'bg-pending';
+    
+    tbody.innerHTML += `
+      <tr>
+        <td>${i.id}</td>
+        <td>${i.title}</td>
+        <td>${i.pincode}</td>
+        <td>${i.priority}</td>
+        <td><span class="badge ${statusClass}">${i.status}</span></td>
+        <td>
+          <button class="btn btn-sm btn-success me-1" onclick="updateStatus(${i.id}, 'Solved')">
+            <i class="fas fa-check"></i> Solve
+          </button>
+          <button class="btn btn-sm btn-warning" onclick="updateStatus(${i.id}, 'Escalated')">
+            <i class="fas fa-level-up-alt"></i> Escalate
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function updateStatus(id, status){
+  const issue = issues.find(i => i.id === id);
+  issue.status = status;
+  localStorage.setItem("issues", JSON.stringify(issues));
+  
+  showNotification(`Issue #${id} status updated to ${status}`, 'success');
+  loadRepIssues();
+}
+
+// Show notification function
+function showNotification(message, type) {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+  notification.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+  notification.innerHTML = `
+    <div class="d-flex align-items-center">
+      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+      <div>${message}</div>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+  `;
+  
+  // Add to document
+  document.body.appendChild(notification);
+  
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, 3000);
+}
+</script>
+</body>
+</html>
